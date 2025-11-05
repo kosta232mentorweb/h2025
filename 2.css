@@ -1,0 +1,12 @@
+.cell {
+  /* width: 120px; */
+  height: 30px;
+  border: 1px solid gray;
+  align-content: center;
+  text-align: center;
+}
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(var(--nx), 1fr);
+}

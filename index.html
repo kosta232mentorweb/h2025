@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+   <link rel="stylesheet" href="css/1.css">
+</head>
+
+<body>
+   <!-- <div class="container">
+      <div class="field">
+
+
+      </div>
+
+   </div> -->
+
+   <!-- <script src="js/1.js"></script> -->
+   <script>
+
+      function canvasClick(event) {
+         console.log(event)
+         console.log(Math.trunc(event.offsetX / cellSize));
+         console.log(Math.trunc(event.offsetY / cellSize));
+      }
+
+      let cellSize;
+
+      (async () => {
+         // Хранилище состояния канваса
+         const GridCanvas = {
+            canvas: null,
+            ctx: null,
+            cols: 0,
+            rows: 0,
+            cell: 0,
+         };
+
+         /**
+          * Создаёт канвас x-by-y клеток и вставляет в body.
+          * @param {number} x - число клеток по горизонтали
+          * @param {number} y - число клеток по вертикали
+          * @param {number} cSize - размер ячейки в пикселях
+          * @returns {HTMLCanvasElement}
+          */
+         function createGridCanvas(x, y, cSize) {
+            if (!Number.isInteger(x) || !Number.isInteger(y) || !Number.isInteger(cSize) || x <= 0 || y <= 0 || cSize <= 0) {
+               throw new Error('Ожидаются положительные целые: x, y, cSize');
+            }
+
+            cellSize = cSize;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = x * cSize;
+            canvas.height = y * cSize;
+            canvas.style.display = 'block';
+            canvas.style.maxWidth = '100%';
+            canvas.style.imageRendering = 'pixelated';
+
+            const ctx = canvas.getContext('2d');
+
+            document.body.appendChild(canvas);
+
+            canvas.addEventListener('click', canvasClick)
+
+            GridCanvas.canvas = canvas;
+            GridCanvas.ctx = ctx;
+            GridCanvas.cols = x;
+            GridCanvas.rows = y;
+            GridCanvas.cell = cSize;
+
+            return canvas;
+         }
+
+         /**
+          * Рисует изображение из URL в указанную ячейку (нумерация с 0).
+          * Масштабирует под размер ячейки без сохранения пропорций.
+          * @param {string} url
+          * @param {number} cellX
+          * @param {number} cellY
+          * @returns {Promise<void>}
+          */
+         async function drawImageToCell(img, cellX, cellY) {
+            if (!GridCanvas.canvas || !GridCanvas.ctx) {
+               throw new Error('Сначала вызовите createGridCanvas');
+            }
+            if (cellX < 0 || cellX >= GridCanvas.cols || cellY < 0 || cellY >= GridCanvas.rows) {
+               throw new Error('Координаты ячейки вне диапазона');
+            }
+
+
+            const { ctx, cell } = GridCanvas;
+            const px = cellX * cell;
+            const py = cellY * cell;
+
+            ctx.drawImage(img, px, py, cell, cell);
+         }
+
+         async function loadImg(url) {
+
+            const img = new Image();
+            // Полезно для кросс-доменных картинок при корректных CORS-заголовках
+            img.crossOrigin = 'anonymous';
+
+            const loaded = new Promise((resolve, reject) => {
+               img.onload = () => resolve();
+               img.onerror = () => reject(new Error('Не удалось загрузить изображение: ' + url));
+            });
+
+            img.src = url;
+            await loaded;
+
+            return img;
+         }
+
+
+         // Пример:
+         createGridCanvas(5, 5, 64);
+         const img = await loadImg('image-3.jpg');
+         drawImageToCell(img, 2, 2);
+
+      })()
+   </script>
+
+</body>
+
+</html>
