@@ -32,9 +32,9 @@ for (let y = 0; y < ny; y++) {
   }
 }
 
-const setField = (x, y, val) => (sp[idFromXY(x, y)] = val);
+const setField = (x, y, val) => (sp[idxFromXY(x, y)] = val);
 
-function idFromXY(x, y) {
+function idxFromXY(x, y) {
   return y * nx + x;
 }
 
@@ -90,43 +90,63 @@ for (let y = 0; y < ny; y++) {
 }
 
 setInterval(() => {
-  // const prev_field = JSON.parse(JSON.stringify(state.board.field));
-  const prev_field = state.board.field.slice(); // клонируем
+  const prev = state.board.field.slice(); // клонируем
 
   label: for (let x = 0; x < nx; x++) {
-    for (let y = ny; y >= 0; y--) {
-      if (prev_field[idFromXY(x, y - 1)] !== " ") {
+    for (let y = ny - 1; y >= 0; y--) {
+      if (prev[idxFromXY(x, y)] !== " ") {
         continue;
       }
-      for (let y2 = y - 1; y2 >= 0; y2--) {
+      for (let y2 = y; y2 >= 0; y2--) {
         if (y2 === 0) {
           setField(x, y2, " ");
         } else {
-          setField(x, y2, prev_field[idFromXY(x, y2 - 1)]);
+          setField(x, y2, prev[idxFromXY(x, y2 - 1)]);
         }
       }
       continue label;
     }
   }
+}, 2000);
 
-  // const prev = state.board.field.slice(); // клонируем
+// setInterval(() => {
+//   for (let x = 0; x < nx; x++) {
+//     for (let y = ny - 1; y > 0; y--) {
+//       const i = idxFromXY(x, y);
+//       const j = idxFromXY(x, y - 1);
+//       if (state.board.field[i] === " " && state.board.field[j] !== " ") {
+//         // одношаговое падение
+//         const v = state.board.field[j];
+//         sp[i] = v;
+//         sp[j] = " ";
+//       }
+//     }
+//   }
+// }, 500);
 
-  // for (let x = 0; x < nx; x++) {
-  //   // снизу вверх, y = ny-1..0
-  //   for (let y = ny - 1; y >= 0; y--) {
-  //     if (prev[idFromXY(x, y)] !== " ") continue;
+// быстрое падение
+// setInterval(() => {
+//   const prev = state.board.field.slice(); // снимок только для чтения
 
-  //     // ищем первый непустой выше текущей пустой
-  //     let k = y - 1;
-  //     while (k >= 0 && prev[idFromXY(x, k)] === " ") k--;
+//   for (let x = 0; x < nx; x++) {
+//     // записываем снизу вверх
+//     let writeY = ny - 1;
 
-  //     if (k >= 0) {
-  //       setField(x, y, prev[idFromXY(x, k)]);
-  //       setField(x, k, " ");
-  //     }
-  //   }
-  // }
-}, 500);
+//     // 1) сваливаем все непустые вниз, сохраняя порядок сверху-вниз
+//     for (let y = ny - 1; y >= 0; y--) {
+//       const v = prev[idFromXY(x, y)];
+//       if (v !== " ") {
+//         setField(x, writeY, v);
+//         writeY--;
+//       }
+//     }
+
+//     // 2) остаток сверху заполняем пробелами
+//     for (let y = writeY; y >= 0; y--) {
+//       setField(x, y, " ");
+//     }
+//   }
+// }, 500);
 
 const ensureStyle = () => {
   if (!document.styleSheets.length) {
