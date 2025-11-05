@@ -1,7 +1,7 @@
 console.log(123);
 
-const nx = 55;
-const ny = 50;
+const nx = 20;
+const ny = 20;
 
 document.documentElement.style.setProperty("--nx", nx);
 document.documentElement.style.setProperty("--ny", ny);
@@ -30,7 +30,8 @@ for (let y = 0; y < ny; y++) {
     const cell = createHTMLElenemt(
       "div",
       { class: "cell", id: `c${x}_${y}` },
-      `${x}-${y}`,
+      // `${x}-${y}`,
+      ` `,
       board
     );
     //  console.log(cell);
@@ -81,23 +82,7 @@ function createHTMLElenemt(
   }
   if (innerHTML) el.innerHTML = innerHTML;
 
-  // if (target) {
-  //   switch (how) {
-  //     case "append":
-  //       target.append(el);
-  //       break;
-  //     case "prepend":
-  //       target.prepend(el);
-  //       break;
-  //     case "before":
-  //       target.before(el);
-  //       break;
-  //     case "after":
-  //       target.after(el);
-  //       break;
-  //   }
-  // }
-  if (target && how in ["append", "prepend", "before", "after"]) {
+  if (target && ["append", "prepend", "before", "after"].includes(how)) {
     target[how](el);
   }
 
@@ -108,7 +93,8 @@ let z = 0;
 
 for (let y = 0; y < ny; y++) {
   for (let x = 0; x < nx; x++) {
-    sp[getIdfromXY(x, y)] = y * nx + x + z;
+    sp[getIdfromXY(x, y)] =
+      Math.random() < 0.15 ? "X" : Math.random() < 0.15 ? "O" : " ";
     //  z++;
   }
 }
@@ -116,10 +102,36 @@ for (let y = 0; y < ny; y++) {
 console.log(sp);
 
 setInterval(() => {
-  for (let y = ny - 1; y >= 0; y--) {
-    for (let x = 0; x < nx; x++) {
-      sp[getIdfromXY(x, y)] =
-        y === 0 ? " " : "" + state.board.field[getIdfromXY(x, y - 1)];
+  const prev_field = JSON.parse(JSON.stringify(state.board.field));
+
+  label: for (let x = 0; x < nx; x++) {
+    for (let y = ny; y >= 0; y--) {
+      // if (y === 0) {
+      //   sp[getIdfromXY(x, y)] = " ";
+      //   continue;
+      // }
+      if (prev_field[getIdfromXY(x, y - 1)] !== " ") {
+        continue;
+      }
+      for (let y2 = y - 1; y2 >= 0; y2--) {
+        if (y2 === 0) {
+          sp[getIdfromXY(x, y2)] = " ";
+        } else {
+          sp[getIdfromXY(x, y2)] = prev_field[getIdfromXY(x, y2 - 1)];
+        }
+      }
+      continue label;
     }
   }
-}, 2000);
+
+  // for (let y = ny - 1; y >= 0; y--) {
+  //   for (let x = 0; x < nx; x++) {
+  //     if (y === 0) {
+  //       sp[getIdfromXY(x, y)] = " ";
+  //     } else if (prev_field[getIdfromXY(x, y)] == " ") {
+  //       sp[getIdfromXY(x, y)] =
+  //         y === 0 ? " " : "" + prev_field[getIdfromXY(x, y - 1)];
+  //     }
+  //   }
+  // }
+}, 500);

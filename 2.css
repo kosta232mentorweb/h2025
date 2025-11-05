@@ -1,12 +1,17 @@
 .cell {
   /* width: 120px; */
-  height: 30px;
-  border: 1px solid gray;
+  height: 40px;
+  border: 1px solid rgb(220, 219, 219);
   align-content: center;
   text-align: center;
+  aspect-ratio: 1;
+  font-family: "Courier New", Courier, monospace;
+  text-transform: capitalize;
+  font-size: 2rem;
 }
 
 #board {
   display: grid;
   grid-template-columns: repeat(var(--nx), 1fr);
+  width: fit-content;
 }
