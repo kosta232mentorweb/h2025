@@ -1,6 +1,9 @@
+* {
+  box-sizing: border-box;
+}
+
 .cell {
-  /* width: 120px; */
-  height: 40px;
+  /* height: 40px; */
   border: 1px solid rgb(220, 219, 219);
   align-content: center;
   text-align: center;
@@ -8,10 +11,17 @@
   font-family: "Courier New", Courier, monospace;
   text-transform: capitalize;
   font-size: 2rem;
+
+  cursor: pointer;
+  &:hover {
+    background-color: #ddd;
+  }
 }
 
 #board {
   display: grid;
   grid-template-columns: repeat(var(--nx), 1fr);
   width: fit-content;
+  margin-right: auto;
+  margin-left: auto;
 }
