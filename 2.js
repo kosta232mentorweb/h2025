@@ -3,6 +3,8 @@ console.log("Начинаем игру!");
 const nx = 40;
 const ny = 40;
 
+document.documentElement;
+
 document.documentElement.style.setProperty("--nx", nx);
 document.documentElement.style.setProperty("--ny", ny);
 
@@ -14,7 +16,25 @@ const state = {
 
 const board = createHTMLElement("div", { id: "board" }, null, document.body);
 
+const mouseButtons = { value: 0 };
+
+document.addEventListener("mousedown", (event) => {
+  mouseButtons.value = event.buttons;
+});
+
+document.addEventListener("mouseup", (event) => {
+  mouseButtons.value = 0;
+});
+
 board.addEventListener("click", (event) => {
+  const cell = event.target.closest(".cell");
+  if (!cell) return;
+  const [x, y] = cell.id.slice(1).split("_").map(Number);
+  setField(x, y, "X");
+});
+
+board.addEventListener("mouseover", (event) => {
+  if (mouseButtons.value != 1) return;
   const cell = event.target.closest(".cell");
   if (!cell) return;
   const [x, y] = cell.id.slice(1).split("_").map(Number);
@@ -107,7 +127,7 @@ setInterval(() => {
       continue label;
     }
   }
-}, 2000);
+}, 500);
 
 // setInterval(() => {
 //   for (let x = 0; x < nx; x++) {
