@@ -231,6 +231,24 @@ function* sId2(x, y) {
     yield { c: c + (x + 0) + "_" + (y + s), class: "bl" };
 }
 
+function* sId3(x, y, m = 2, prefix = "#c", dedupeCorners = true) {
+  const emit = (i, j, cls) => ({ c: `${prefix}${i}_${j}`, class: cls });
+
+  if (!dedupeCorners) {
+    for (let s = 0; s <= m; s++) yield emit(x + s, y, "bt");
+    for (let s = 0; s <= m; s++) yield emit(x + m, y + s, "br");
+    for (let s = m; s >= 0; s--) yield emit(x + s, y + m, "bb");
+    for (let s = m; s >= 0; s--) yield emit(x, y + s, "bl");
+    return;
+  }
+
+  // без повторов на углах
+  for (let s = 0; s <= m; s++) yield emit(x + s, y, "bt"); // верх
+  for (let s = 1; s <= m; s++) yield emit(x + m, y + s, "br"); // право
+  for (let s = m - 1; s >= 0; s--) yield emit(x + s, y + m, "bb"); // низ
+  for (let s = m - 1; s >= 1; s--) yield emit(x, y + s, "bl"); // лево
+}
+
 function* rangeGen(start, end) {
   const dir = end > start;
 
