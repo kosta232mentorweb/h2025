@@ -26,3 +26,21 @@
   margin-right: auto;
   margin-left: auto;
 }
+
+:root {
+  --bw: 2px;
+  --bc: cyan;
+}
+
+.bt {
+  border-top: var(--bw) solid var(--bc);
+}
+.bl {
+  border-left: var(--bw) solid var(--bc);
+}
+.br {
+  border-right: var(--bw) solid var(--bc);
+}
+.bb {
+  border-bottom: var(--bw) solid var(--bc);
+}

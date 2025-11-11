@@ -184,3 +184,87 @@ const h = Math.trunc(Math.min((ww - 20) / nx, (wh - 20) / ny));
 document.styleSheets[0].insertRule(
   `.cell {height: ${h}px !important; font-size: ${h}px !important;}`
 );
+
+function delay(ms) {
+  return new Promise((res) => {
+    setTimeout(res, ms);
+  });
+}
+
+(async () => {
+  await delay(1000);
+  $("#c2_2").classList.add("bt");
+  await delay(1000);
+  $("#c2_2").classList.add("br");
+  await delay(1000);
+  $("#c2_2").classList.add("bb");
+  await delay(1000);
+  $("#c2_2").classList.add("bl");
+})();
+
+function* sId(x, y) {
+  const c = "#c";
+  yield { c: c + (x + 0) + "_" + (y + 0), class: "bt" };
+  yield { c: c + (x + 1) + "_" + (y + 0), class: "bt" };
+  yield { c: c + (x + 2) + "_" + (y + 0), class: "bt" };
+  yield { c: c + (x + 2) + "_" + (y + 0), class: "br" };
+  yield { c: c + (x + 2) + "_" + (y + 1), class: "br" };
+  yield { c: c + (x + 2) + "_" + (y + 2), class: "br" };
+  yield { c: c + (x + 2) + "_" + (y + 2), class: "bb" };
+  yield { c: c + (x + 1) + "_" + (y + 2), class: "bb" };
+  yield { c: c + (x + 0) + "_" + (y + 2), class: "bb" };
+  yield { c: c + (x + 0) + "_" + (y + 2), class: "bl" };
+  yield { c: c + (x + 0) + "_" + (y + 1), class: "bl" };
+  yield { c: c + (x + 0) + "_" + (y + 0), class: "bl" };
+}
+
+function* sId2(x, y) {
+  const c = "#c";
+  const m = 2;
+  for (const s of rangeGen(0, m))
+    yield { c: c + (x + s) + "_" + (y + 0), class: "bt" };
+  for (const s of rangeGen(0, m))
+    yield { c: c + (x + m) + "_" + (y + s), class: "br" };
+  for (const s of rangeGen(m, 0))
+    yield { c: c + (x + s) + "_" + (y + m), class: "bb" };
+  for (const s of rangeGen(m, 0))
+    yield { c: c + (x + 0) + "_" + (y + s), class: "bl" };
+}
+
+function* rangeGen(start, end) {
+  const dir = end > start;
+
+  if (start === end) yield start;
+  else
+    for (let i = start; dir ? i <= end : i >= end; dir ? i++ : i--) {
+      yield i;
+    }
+}
+
+function range(start = 0, end = 9) {
+  return [...rangeGen(start, end)];
+}
+
+console.log([...sId(2, 3)]);
+console.log(range(0, 11));
+
+const r3 = range(0, 2);
+console.log(r3);
+console.log([...rangeGen(2, 0)]);
+
+async function border3x3(x, y, pause = 300) {
+  for (let c of sId2(x, y)) {
+    await delay(pause);
+    $(c.c).classList.add(c.class);
+  }
+}
+
+(async () => {
+  for (let c of sId(5, 5)) {
+    await delay(100);
+    $(c.c).classList.add(c.class);
+  }
+
+  await border3x3(9, 8, 100);
+  await border3x3(9, 8, 500);
+})();
