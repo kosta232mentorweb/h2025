@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <title>Квадрат с растущей линией бордера</title>
+   <style>
+      :root {
+         /* Настройки */
+         --size: 260px;
+         /* размер квадрата */
+         --radius: 4px;
+         /* скругление фона */
+         --stroke: 4;
+         /* толщина линии бордера (px визуально) */
+         --duration: 4s;
+         /* полный цикл: рост → пауза → сброс */
+      }
+
+      .wrap {
+         position: relative;
+         width: var(--size);
+         aspect-ratio: 1 / 1;
+         /* гарантированно квадратная форма */
+      }
+
+      .box {
+         width: 100%;
+         height: 100%;
+         background: #0f1220;
+         border-radius: var(--radius);
+      }
+
+      /* SVG-граница поверх */
+      .border {
+         position: absolute;
+         inset: 0;
+         color: #66ccff;
+         /* базовый цвет штриха */
+         pointer-events: none;
+         /* Мягкая смена оттенка во времени */
+         animation: hue 6s linear infinite;
+         filter: hue-rotate(var(--hue, 0deg));
+      }
+
+      .border rect {
+         fill: none;
+         stroke: currentColor;
+         stroke-linecap: round;
+         /* Путь длиной ~388 в системе viewBox 100×100 */
+         stroke-dasharray: 10;
+         stroke-dashoffset: 0;
+         /* начинаем с пустой линии */
+         vector-effect: non-scaling-stroke;
+         /* Рост → пауза → быстрый сброс → повтор */
+         animation: draw var(--duration) ease-in-out infinite;
+         /* Толщина в px при любых размерах */
+         /* Управляем через CSS-переменную */
+         stroke-width: var(--stroke);
+      }
+
+      @keyframes draw {
+         0% {
+            stroke-dashoffset: 0;
+            stroke-dasharray: 10;
+         }
+
+
+         /* короткая пауза */
+         100% {
+            stroke-dasharray: 980;
+            stroke-dashoffset: 10;
+         }
+
+         /* быстрый сброс и повтор */
+      }
+
+      @keyframes hue {
+         to {
+            /* --hue: 360deg; */
+         }
+      }
+
+      /* Декоративная тень, не обязательна */
+      .wrap::after {
+         content: "";
+         position: absolute;
+         inset: 0;
+         border-radius: var(--radius);
+         box-shadow: 0 10px 30px rgba(102, 204, 255, 0.18);
+      }
+
+      /* Центрирование демо */
+      body {
+         min-height: 100svh;
+         display: grid;
+         place-items: center;
+         background: #0a0c14;
+      }
+   </style>
+</head>
+
+<body>
+   <div class="wrap">
+      <div class="box"></div>
+      <!-- Вьюбокс 0..100 позволяет рассчитывать периметр один раз -->
+      <svg class="border" viewBox="0 0 100 100" preserveAspectRatio="none">
+         <!-- Отступ 1.5 чтобы штрих не обрезался краем -->
+         <rect x="1.5" y="1.5" width="97" height="97" rx="12" ry="12" />
+      </svg>
+   </div>
+</body>
+
+</html>

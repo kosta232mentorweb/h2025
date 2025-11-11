@@ -1,7 +1,7 @@
 console.log("Начинаем игру!");
 
-const nx = 40;
-const ny = 40;
+const nx = 16;
+const ny = 16;
 
 document.documentElement;
 
@@ -127,7 +127,7 @@ setInterval(() => {
       continue label;
     }
   }
-}, 500);
+}, 1000);
 
 // setInterval(() => {
 //   for (let x = 0; x < nx; x++) {
